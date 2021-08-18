@@ -41,11 +41,24 @@ namespace ElevenNote.WebAPI.Controllers
         }
 
 
-        private NoteService CreateNoteService()
+        public NoteService CreateNoteService()
         {
             var userId = Guid.Parse(User.Identity.GetUserId());
             var noteService = new NoteService(userId);
             return noteService;
+        }
+
+        public IHttpActionResult Put (NoteEdit note)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var service = CreateNoteService();
+
+            if (!service.UpdateNote(note))
+                return InternalServerError();
+
+            return Ok();
         }
     }
 }
